@@ -4,8 +4,31 @@ import { nanoid } from 'nanoid';
 import { ContactForm } from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList';
+import { createSlice } from '@reduxjs/toolkit';
 
 const STORAGE_KEY = 'contacts';
+
+const contactsSlice = createSlice({
+  name: 'contacts',
+  initialState: [],
+  reducers: {
+    addContact(state, action) {},
+    deleteContact(state, action) {},
+  }
+});
+
+const filterSlice = createSlice({
+  name: 'filter',
+  initialState: '',
+  reducers: {
+    updateFilter(state, action) {
+      state.filter = action.payload;
+    },
+    resetFilter(state, action) {
+      state.filter = '';
+    },
+  }
+})
 
 export const App = () => {
   const [contacts, setContacts] = useState(() => {
