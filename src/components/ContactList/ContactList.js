@@ -1,14 +1,48 @@
-import { ContactItem } from 'components/ContactItem/ContactItem';
-import { List, Item } from './ContactList.styled';
+import { useDispatch, useSelector } from 'react-redux';
 
-export const ContactList = ({ items, onDelete }) => {
+import { getContacts, deleteContact } from 'redux/contactsSlice';
+import { getFilter } from 'redux/filterSlice';
+import {
+  List,
+  Item,
+  Wrapper,
+  AccentText,
+  Text,
+  Button,
+} from './ContactList.styled';
+
+export const ContactList = () => {
+  const dispatch = useDispatch();
+  const contacts = useSelector(getContacts);
+  const filter = useSelector(getFilter);
+
+  const visibleContacts = contacts.filter(contact => {
+    const hasContact = contact.name
+      .toLowerCase()
+      .includes(filter.toLowerCase());
+    return hasContact;
+  });
+
   return (
     <List>
-      {items.map(item => (
-        <Item key={item.id}>
-          <ContactItem contact={item} onDelete={onDelete} />
-        </Item>
-      ))}
+      {visibleContacts.length > 0 &&
+        visibleContacts.map(contact => (
+          <Item key={contact.id}>
+            <Wrapper>
+              <Text>
+                <AccentText>Name: </AccentText>
+                {contact.name}
+              </Text>
+              <Text>
+                <AccentText>Number: </AccentText>
+                {contact.number}
+              </Text>
+              <Button onClick={() => dispatch(deleteContact(contact.id))}>
+                Delete contact
+              </Button>
+            </Wrapper>
+          </Item>
+        ))}
     </List>
   );
 };

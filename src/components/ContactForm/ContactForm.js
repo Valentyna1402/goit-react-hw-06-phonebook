@@ -1,6 +1,8 @@
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { addContact, getContacts } from 'redux/contactsSlice';
 import {
   ErrorMessage,
   Field,
@@ -21,7 +23,22 @@ const contactsSchema = Yup.object().shape({
     .required('Required!'),
 });
 
-export const ContactForm = ({ onAdd }) => {
+export const ContactForm = () => {
+  const dispatch = useDispatch();
+  const contacts = useSelector(getContacts);
+
+  const handleSubmit = values => {
+    const name = values.name;
+    const number = values.number;
+    const isOnContacts = contacts.some(
+      contact => contact.name.toLowerCase() === name.toLowerCase()
+    );
+
+    isOnContacts
+      ? alert(`${name} already in phonebook!`)
+      : dispatch(addContact(name, number));
+  };
+
   return (
     <Container>
       <Formik
@@ -31,20 +48,20 @@ export const ContactForm = ({ onAdd }) => {
         }}
         validationSchema={contactsSchema}
         onSubmit={(values, actions) => {
-          onAdd(values);
           actions.resetForm();
+          handleSubmit(values);
         }}
       >
         <Form>
           <FormGroup htmlFor="name">
             Name
-            <Field name="name" placeholder="Anna" />
+            <Field name="name" placeholder="Anna" value={contacts.name} />
             <ErrorMessage name="name" component="span" />
           </FormGroup>
 
           <FormGroup htmlFor="number">
             Number
-            <Field name="number" placeholder="+45..." />
+            <Field name="number" placeholder="+45..." value={contacts.number} />
             <ErrorMessage name="number" component="span" />
           </FormGroup>
 
