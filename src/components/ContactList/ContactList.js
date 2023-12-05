@@ -23,10 +23,11 @@ export const ContactList = () => {
     return hasContact;
   });
 
+  if (!visibleContacts.length) return null;
+
   return (
     <List>
-      {visibleContacts.length > 0 &&
-        visibleContacts.map(contact => (
+      {visibleContacts.map(contact => (
           <Item key={contact.id}>
             <Wrapper>
               <Text>
